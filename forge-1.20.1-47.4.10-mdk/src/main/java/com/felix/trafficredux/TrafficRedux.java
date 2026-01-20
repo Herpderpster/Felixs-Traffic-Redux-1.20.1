@@ -1,14 +1,14 @@
 package com.felix.trafficredux;
 
+import com.felix.trafficredux.item.ModCreativeModeTabs;
 import com.felix.trafficredux.item.ModItems;
+import com.felix.trafficredux.registry.ModBlockEntities;
+import com.felix.trafficredux.registry.ModBlocks;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 
-import net.minecraft.world.item.CreativeModeTabs;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -33,8 +33,14 @@ public class TrafficRedux
     public TrafficRedux() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
+        ModCreativeModeTabs.register(modEventBus);
+
         // Register the items added
         ModItems.register(modEventBus);
+
+        ModBlocks.BLOCKS.register(modEventBus);
+
+        ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
 
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
@@ -43,8 +49,6 @@ public class TrafficRedux
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
-        // Register the item to a creative tab
-        modEventBus.addListener(this::addCreative);
 
     }
 
@@ -55,13 +59,7 @@ public class TrafficRedux
 
     }
 
-    // Add the blocks/items to the building blocks tab
-    private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if(event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            event.accept(ModItems.Controller_Linker);
-        }
 
-    }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
